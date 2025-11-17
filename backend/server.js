@@ -5,7 +5,9 @@ const userRoutes = require('./routes/userRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const cookieParser = require('cookie-parser');
 const locationRoutes = require('./routes/locationRoutes');
-// Load environment variables
+const path = require('path'); // Load environment variables
+const identificationRoutes = require('./routes/identificationRoutes');
+const pickupRoutes = require('./routes/pickupRoutes');
 dotenv.config();
 
 // Connect to MongoDB
@@ -19,6 +21,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use('/api/pickups', pickupRoutes);
 // --- API ROUTES ---
 // Test route
 app.get('/api', (req, res) => {
@@ -28,6 +31,10 @@ app.get('/api', (req, res) => {
 // All user auth routes will be prefixed with /api/auth
 app.use('/api/auth', userRoutes);
 app.use('/api/locations', locationRoutes);
+app.use('/api/identify', identificationRoutes);
+// Make the uploads folder static so we can view images in browser
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // --- ERROR HANDLING MIDDLEWARE ---
 // These must be at the end

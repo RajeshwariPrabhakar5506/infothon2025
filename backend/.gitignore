@@ -3,3 +3,6 @@ node_modules
 
 # Environment variables
 .env
+# do not want to commit test user photos to GitHub
+uploads/
+!uploads/.gitkeep
