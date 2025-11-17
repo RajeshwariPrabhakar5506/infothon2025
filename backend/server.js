@@ -4,6 +4,7 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const cookieParser = require('cookie-parser');
+const locationRoutes = require('./routes/locationRoutes');
 // Load environment variables
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get('/api', (req, res) => {
 
 // All user auth routes will be prefixed with /api/auth
 app.use('/api/auth', userRoutes);
+app.use('/api/locations', locationRoutes);
 
 // --- ERROR HANDLING MIDDLEWARE ---
 // These must be at the end

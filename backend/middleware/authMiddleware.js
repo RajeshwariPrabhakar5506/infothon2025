@@ -6,18 +6,19 @@ const User = require('../models/userModel');
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  // Read the JWT from the 'jwt' cookie
+  // 1. Check Cookie
   token = req.cookies.jwt;
+
+  // 2. Check Header (This is what you are using now)
+  if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
 
   if (token) {
     try {
-      // 1. Verify the token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // 2. Find the user in the DB (exclude password) and attach to request
       req.user = await User.findById(decoded.userId).select('-password');
-
-      next(); // Proceed to the next middleware/route
+      next();
     } catch (error) {
       console.error(error);
       res.status(401);
