@@ -12,4 +12,8 @@ router.post('/', protect, upload.single('image'), identifyWaste);
 // GET /api/identify/history - Protected
 router.get('/history', protect, getHistory);
 
+
+// POST route that accepts a single file named 'image'
+router.post('/identify', upload.single('image'), identifyWaste);
+
 module.exports = router;

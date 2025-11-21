@@ -1,14 +1,15 @@
+// --- MUST BE FIRST ---
+require('dotenv').config();
+
 const express = require('express');
-const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const cookieParser = require('cookie-parser');
 const locationRoutes = require('./routes/locationRoutes');
-const path = require('path'); // Load environment variables
+const path = require('path');
 const identificationRoutes = require('./routes/identificationRoutes');
 const pickupRoutes = require('./routes/pickupRoutes');
-dotenv.config();
 
 // Connect to MongoDB
 connectDB();
@@ -17,32 +18,32 @@ connectDB();
 const app = express();
 
 // --- MIDDLEWARE ---
-// Body parser middleware to accept JSON data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Pickup routes
 app.use('/api/pickups', pickupRoutes);
+
 // --- API ROUTES ---
-// Test route
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to the GreenSort API!' });
 });
 
-// All user auth routes will be prefixed with /api/auth
+// Route groups
 app.use('/api/auth', userRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/identify', identificationRoutes);
-// Make the uploads folder static so we can view images in browser
+
+// Static uploads folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-
-// --- ERROR HANDLING MIDDLEWARE ---
-// These must be at the end
+// --- ERROR HANDLERS ---
 app.use(notFound);
 app.use(errorHandler);
 
-// Start the server
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+app.listen(PORT, () =>
+  console.log(`Server is running on http://localhost:${PORT}`)
+);
